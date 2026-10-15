@@ -32,16 +32,19 @@ The plan folders are the map; this folder is the trip log.
 
 | File | Period | Status |
 |---|---|---|
-| [2026-09-13 to 2026-10-13.md](2026-09-13%20to%202026-10-13.md) | Lead-in month plus Weeks 1-2 of the plan | Claude's half written; waiting on your notes |
+| [2026-09-13 to 2026-10-13.md](2026-09-13%20to%202026-10-13.md) | Lead-in month plus Weeks 1-2 of the plan | Notes in, adjustments agreed 15 Oct 2026, Month 2 built from them |
 
 ## Standing context (updated as it changes)
 
-- **Swimming paused** from late September 2026 because of a nagging shoulder injury. All swim sessions
-  are cancelled until the shoulder is ready. Return-to-swim will start with short, drill-only sessions.
-- **Ketogenic diet** started October 2026 as a long-term, non-negotiable health choice. Expect 4 to 6
-  weeks of adaptation during which endurance sessions feel harder and power or pace may drop. That is
-  expected, not a sign of lost fitness. Training intensity stays low through the adaptation window.
-- **Current focus**: getting comfortable on the indoor trainer, keeping the treadmill walk/run
-  progression gentle, and strength work through the planner.
+- **Swimming paused** from late September 2026 because of a nagging shoulder injury. Improving as of
+  mid-October (can roll onto it, lighter loading at the gym is fine). Not scheduled; return starts with
+  a 20-minute kick-and-drill swim after two weeks of pain-free pressing.
+- **Ketogenic diet** started October 2026 as a long-term, non-negotiable health choice, on a modified
+  one-meal-a-day pattern, so most mid-day sessions are fasted. Expect 4 to 6 weeks of adaptation
+  (self-rated "about 70%" on 15 October). Lower power or pace in this window is expected, not lost
+  fitness. Endurance work stays Zone 1 to 2 through November; fast-legs work is cadence, not speed.
+- **Weight** dipped below 200 lb in mid-October (from 207 lb at the start). Long runs wait on the trend.
+- **Run guardrails**: walk/run only, twice a week, jog capped at 7.0 mph through Month 2. Pain scale is
+  0 = no pain, 10 = worst pain.
 - **Mindset rule for these reflections**: credit what was done; the gap to the plan is information,
   not a verdict.

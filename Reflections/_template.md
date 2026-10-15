@@ -72,7 +72,7 @@ _Everything below this line is yours. Write as much or as little as you like. Pr
 
 **Keto adaptation: hunger, brain fog, how sessions felt in the second half:**
 
-**Achilles and knees after the treadmill sessions:**
+**Achilles and knees after the treadmill sessions (0 = no pain, 10 = worst pain; during, and the next morning):**
 
 **What I'm proud of:**
 
