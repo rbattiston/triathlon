@@ -44,6 +44,7 @@ The plan folders are the map; this folder is the trip log.
   (self-rated "about 70%" on 15 October). Lower power or pace in this window is expected, not lost
   fitness. Endurance work stays Zone 1 to 2 through November; fast-legs work is cadence, not speed.
 - **Weight** dipped below 200 lb in mid-October (from 207 lb at the start). Long runs wait on the trend.
+- **Calendar**: sessions sit at 12:00 PM weekdays and 10:00 AM weekends as placeholders; drag to the real time. The one reminder per event fires at 8:00 AM, never earlier.
 - **Run guardrails**: walk/run only, twice a week, jog capped at 7.0 mph through Month 2. Pain scale is
   0 = no pain, 10 = worst pain.
 - **Mindset rule for these reflections**: credit what was done; the gap to the plan is information,

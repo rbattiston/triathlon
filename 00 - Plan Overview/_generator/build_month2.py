@@ -206,15 +206,15 @@ def overview_pdf():
     story.append(Paragraph("Weekly template", H2))
     story.append(table([
         ["Day", "Session", "Time", "Duration"],
-        ["Monday", "Strength A - full-body foundation", "6:00 AM", "45 min"],
-        ["Tuesday", "Bike - trainer, ERG, Zone 2 with spin-ups", "6:00 AM", "40-60 min"],
-        ["Wednesday", "Run - treadmill walk/run + prehab", "6:00 AM", "40-55 min"],
-        ["Thursday", "Optional - elliptical Zone 2", "6:00 AM", "30-40 min"],
-        ["Friday", "Strength B - hips, knees, core", "6:00 AM", "35 min"],
-        ["Saturday", "Bike - weekend ride (outdoor if 5 C+ and dry)", "8:00 AM", "60-90 min"],
-        ["Sunday", "Run - treadmill walk/run (no strength after)", "8:00 AM", "35-50 min"],
+        ["Monday", "Strength A - full-body foundation", "12:00 PM", "45 min"],
+        ["Tuesday", "Bike - trainer, ERG, Zone 2 with spin-ups", "12:00 PM", "40-60 min"],
+        ["Wednesday", "Run - treadmill walk/run + prehab", "12:00 PM", "40-55 min"],
+        ["Thursday", "Optional - elliptical Zone 2", "12:00 PM", "30-40 min"],
+        ["Friday", "Strength B - hips, knees, core", "12:00 PM", "35 min"],
+        ["Saturday", "Bike - weekend ride (outdoor if 5 C+ and dry)", "10:00 AM", "60-90 min"],
+        ["Sunday", "Run - treadmill walk/run (no strength after)", "10:00 AM", "35-50 min"],
     ], [1.0*inch, 3.4*inch, 1.0*inch, 1.7*inch]))
-    story.append(Paragraph("Calendar slots are the Month 1 convention. You train mid-day in practice; say the word and every event moves.", BODY))
+    story.append(Paragraph("Calendar slots are placeholders for a mid-day session; drag them to the real time on the day. Every event's single reminder fires at 8:00 AM, nothing earlier.", BODY))
     story.append(Paragraph("Week by week", H2))
     rows = [["Week", "Dates", "Theme", "Trainer", "Weekend ride", "Walk/run (x2)", "Hours"]]
     for n in WEEKS:
@@ -236,6 +236,10 @@ def overview_pdf():
     ], [2.6*inch, 2.2*inch, 2.3*inch]))
     build_pdf(os.path.join(ROOT, MONTH_NAME, "Month 02 Overview.pdf"), story, "Month 02 Overview")
 
+# Calendar slots and reminders (agreed 15 Oct 2026): Roberto trains mid-day and wants the ONE notification at 8:00 AM,
+# never a 6 AM buzz. Weekdays start 12:00 with a 240-min popup; weekends start 10:00 with a 120-min popup. Both fire at 8:00.
+SLOT = {"06:00": ("12:00", 240), "08:00": ("10:00", 120), "08:35": ("10:35", 155)}
+
 def events():
     out = []
     for n in WEEKS:
@@ -243,7 +247,8 @@ def events():
         for key in ["bike", "run", "strength"]:
             for s in M2[n][key]:
                 d = mon + dt.timedelta(days=s["day"])
-                h, m = s["start"].split(":")
+                slot, reminder = SLOT.get(s["start"], (s["start"], 240))
+                h, m = slot.split(":")
                 start = dt.datetime(d.year, d.month, d.day, int(h), int(m)); end = start + dt.timedelta(minutes=s["dur"])
                 lines = ["Week %d of 52 - Month 2: %s" % (n, M2[n]["theme"]), "Focus: " + s["focus"], ""]
                 for a, b in s["rows"]:
@@ -253,7 +258,8 @@ def events():
                 lines += ["", "Printout: " + os.path.join(week_folder(s["activity"], n), "Week %02d %s.pdf" % (n, s["activity"]))]
                 title = ("%s: %s" % (s["activity"], s["title"])) if not s.get("optional") else s["title"]
                 out.append(dict(summary=title, startTime=start.strftime("%Y-%m-%dT%H:%M:00") + TZ, endTime=end.strftime("%Y-%m-%dT%H:%M:00") + TZ,
-                                description="\n".join(lines), colorId=COLOR_IDS[s["activity"]] if not s.get("optional") else "8"))
+                                description="\n".join(lines), colorId=COLOR_IDS[s["activity"]] if not s.get("optional") else "8",
+                                reminderMinutes=reminder))
     return out
 
 if __name__ == "__main__":
