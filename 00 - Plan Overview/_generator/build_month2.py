@@ -50,19 +50,18 @@ STR_A = [
     ("Eccentric heel drops, straight and bent knee", "3 x 12-15 each at 90 lb", "Slow 3 s lowering. This is the most important exercise in the session"),
 ]
 STR_B = [
-    ("Machine glute thrust (replaces glute bridge)", "3 x {a} starting at 150 lb", "Your Sep 20 top was 250 lb; start light and leave 3 reps in reserve, add 10-20 lb per week"),
-    ("Clamshell with band", "3 x 15 each", "Pelvis does not roll back"),
-    ("Monster walk", "3 x 10 steps each way", "Stay low, knees out"),
-    ("Step-down from low step", "3 x {s} each", "Knee over second toe, slow. Watch the knee the next morning"),
-    ("Wall sit", "3 x {d} s", "Progress time, not depth"),
-    ("Bent-knee calf raise (seated, weight on thigh)", "3 x 15 at 90 lb (Week 8 target 100 lb)", "Slow up, slow down"),
-    ("Bird dog", "3 x {a} each side", "Hips level, reach long"),
-    ("Pallof press (band)", "3 x {a} each side", "Resist the rotation"),
-    ("Front plank", "3 x {d} s", "Squeeze glutes, breathe. Count 10-second blocks out loud"),
-    ("Single-leg balance", "3 x 30 s each", "Eyes closed if easy"),
+    ("Warm-up (5 min)", "Monster walk 2 x 10 steps each way, clamshell 1 x 15 each, 10 slow bodyweight step-downs each leg", "The band work is the warm-up now, not the session"),
+    ("Machine glute thrust", "3 x {a} starting at 150 lb (Week 7 target 180-200 lb)", "Your Sep 20 top was 250 lb. 2 s squeeze at the top, ribs down, leave 3 reps in reserve"),
+    ("Bulgarian split squat, rear foot on a bench, dumbbells", "3 x {a} each leg at 2 x 25 lb (Week 7 target 2 x 35 lb)", "Front shin near vertical, knee over the second toe, torso tall. This is the squat pattern running actually uses"),
+    ("Single-leg dumbbell deadlift", "3 x {a} each leg at 35-40 lb", "Hinge, free-side hip stays level, a hand on the rack for balance is fine. Hamstring and glute medius together"),
+    ("Weighted step-down from a 6-8 inch step", "3 x {s} each leg holding a 20-25 lb dumbbell goblet-style", "Slow 3 s lower, free heel taps the floor, knee never dives inward. Patellar tracking under load"),
+    ("Leg press calf raise, straight knee", "3 x 15 at 180 lb (Week 7 target 200 lb)", "Full range, 3 s down, 30 s rest as you already do. Achilles capacity"),
+    ("Copenhagen plank, short lever (knee on the bench)", "3 x {e} s each side", "Top knee and shin on the bench, bottom leg bent, hips in line. Adductors protect the knee; build time, not lever length"),
+    ("Cable Pallof press", "3 x {a} each side at 25-30 lb", "Cable at chest height, arms long, resist the twist. Add 5 lb when 12 feel easy"),
+    ("Suitcase carry", "3 x 40 m each hand with a 50-70 lb dumbbell", "Walk tall, shoulders level, no lean. Lateral core under real load; the finisher you will enjoy"),
 ]
-LEVELS = {5: dict(a=10, b=10, c=8, d=30, s=12), 6: dict(a=12, b=12, c=10, d=40, s=15), 7: dict(a=12, b=12, c=10, d=45, s=15),
-          8: dict(a=12, b=14, c=10, d=45, s=15), 9: dict(a=8, b=8, c=6, d=30, s=10)}
+LEVELS = {5: dict(a=10, b=10, c=8, d=30, s=12, e=20), 6: dict(a=12, b=12, c=10, d=40, s=15, e=25), 7: dict(a=12, b=12, c=10, d=45, s=15, e=30),
+          8: dict(a=12, b=14, c=10, d=45, s=15, e=30), 9: dict(a=8, b=8, c=6, d=30, s=10, e=20)}
 
 def str_rows(exs, n):
     return [(name, s.format(**LEVELS[n]) + ". " + cue) for name, s, cue in exs]
@@ -71,8 +70,9 @@ def strength_pair(n, note_a, note_b):
     return [
         strength(0, "Strength A - Full-body foundation", "Movement quality, tendon loading, core", str_rows(STR_A, n), 45,
                  "Warm up 5 min easy, then 10 bodyweight squats, 10 hinges, 10 arm circles. Rest 60-90 s. Fasted is fine at this length. " + note_a),
-        strength(4, "Strength B - Hips, knees, core", "Glute medius, patellar tracking, trunk stability. Now on its own day, no run before it.", str_rows(STR_B, n), 35,
-                 "Warm up 5 min walk or easy spin. " + note_b),
+        strength(4, "Strength B - Single-leg strength", "Run durability: glute medius, patellar tracking, Achilles, adductors, lateral core. The same muscles as the band version, loaded.", str_rows(STR_B, n), 45,
+                 "Rebuilt 29 Oct 2026 from your end-of-October comments: the band version felt like accessory work. Every stride lands about 2.5 x bodyweight on one leg; this session is what makes that safe. "
+                 "Rest 60-90 s, nothing to failure, own day with no run before it. " + note_b),
     ]
 
 def trainer(n, title, focus, rows, dur, notes=""):
@@ -99,7 +99,7 @@ M2[5] = dict(theme="Keto adaptation 1: settle in", bike=[
         ("Trainer version", "10 min warm-up, 40 min at 115-135 W with 3 x 5 min at 95 rpm, 10 min cool-down."),
     ], 60)],
     run=[walkrun(2, 6, 1.5, 2.0, "5 and 6", 45), elliptical(5, 30), walkrun(6, 6, 1.5, 2.0, "5 and 6", 40, start="08:00")],
-    strength=strength_pair(5, "Week 5: hold the Oct 8 loads. Push-ups only if the shoulder is at 0-1/10.", "First week with the machine glute thrust: 150 lb, 3 reps in reserve."))
+    strength=strength_pair(5, "Week 5: hold the Oct 8 loads. Push-ups only if the shoulder is at 0-1/10.", "Week 5: find the loads. Glute thrust 150 lb, split squat 2 x 25 lb, single-leg deadlift 35 lb, 3 reps in reserve everywhere."))
 
 M2[6] = dict(theme="Keto adaptation 2: one more rep", bike=[
     trainer(6, "Trainer - Zone 2, spin-ups and single-leg", "Pedalling skill while the engine adapts", [
@@ -112,7 +112,7 @@ M2[6] = dict(theme="Keto adaptation 2: one more rep", bike=[
         ("Trainer version", "10 min warm-up, 55 min at 115-135 W with 2 x 10 min at 95 rpm, 10 min cool-down."),
     ], 75, "Carry water with sodium even if you eat nothing.")],
     run=[walkrun(2, 7, 1.5, 2.0, "6 and 7", 50), elliptical(6, 35), walkrun(6, 7, 1.5, 2.0, "6 and 7", 45, start="08:00")],
-    strength=strength_pair(6, "Week 6: add 1-2 reps per set, same weights.", "Glute thrust +10-20 lb if Week 5 felt easy."))
+    strength=strength_pair(6, "Week 6: add 1-2 reps per set, same weights.", "Week 6: +10-20 lb on the glute thrust, +5 lb per dumbbell where Week 5 was clean."))
 
 M2[7] = dict(theme="Adaptation easing: a little more time at the top of Zone 2", bike=[
     trainer(7, "Trainer - upper Zone 2 blocks", "Sustained aerobic work at a brisk cadence", [
@@ -125,7 +125,7 @@ M2[7] = dict(theme="Adaptation easing: a little more time at the top of Zone 2",
         ("Trainer version", "10 min warm-up, 70 min at 115-135 W with 2 x 10 min at %s, 10 min cool-down." % Z["z2hi"]),
     ], 90, "Electrolytes in the bottle. Note how the last 20 min feel compared with Week 5.")],
     run=[walkrun(2, 6, 2.0, 2.0, "5 and 6", 50), elliptical(7, 40), walkrun(6, 6, 2.0, 2.0, "5 and 6", 45, start="08:00")],
-    strength=strength_pair(7, "Week 7: heaviest week of the block. Goblet squat 75 lb, RDL 60 lb if the last two weeks were clean.", "Glute thrust to about 180 lb. Calf raise to 100 lb."))
+    strength=strength_pair(7, "Week 7: heaviest week of the block. Goblet squat 75 lb, RDL 60 lb if the last two weeks were clean.", "Week 7: heaviest week. Glute thrust 180-200 lb, split squat 2 x 35 lb, calf raise 200 lb."))
 
 M2[8] = dict(theme="Consolidate", bike=[
     trainer(8, "Trainer - upper Zone 2 blocks, lower cadence", "Same work, more torque", [
@@ -138,7 +138,7 @@ M2[8] = dict(theme="Consolidate", bike=[
         ("Trainer version", "10 min warm-up, 70 min at 120-135 W at 90 rpm, 10 min cool-down."),
     ], 90, "Compare average heart rate with Week 7. Lower at the same watts means adaptation is landing.")],
     run=[walkrun(2, 7, 2.0, 2.0, "6 and 7", 55), elliptical(8, 40), walkrun(6, 7, 2.0, 2.0, "6 and 7", 50, start="08:00")],
-    strength=strength_pair(8, "Week 8: hold Week 7 loads, add a rep where it is clean.", "Hold Week 7 loads. Plank and wall sit to 45 s."))
+    strength=strength_pair(8, "Week 8: hold Week 7 loads, add a rep where it is clean.", "Week 8: hold Week 7 loads. Copenhagen plank to 30 s, add a rep where it is clean."))
 
 M2[9] = dict(theme="Recovery week and checkpoint", bike=[
     trainer(9, "Trainer - easy spin", "Recovery", [
@@ -151,10 +151,10 @@ M2[9] = dict(theme="Recovery week and checkpoint", bike=[
         ("If not yet", "60 min easy Zone 2, outdoors or trainer. Test in Week 10 or 11 instead. Nothing is lost by waiting."),
     ], 60, "Either way, weigh in this week and write the number in the Month 2 reflection.", start="08:00")],
     run=[walkrun(2, 5, 1.5, 2.0, "4 and 5", 40), elliptical(9, 30), walkrun(6, 5, 1.5, 2.0, "4 and 5", 35, start="08:00")],
-    strength=strength_pair(9, "Week 9: light. Weights down 20-30%, reps as listed.", "Light. Keep heel drops and calf raises at full volume."))
+    strength=strength_pair(9, "Week 9: light. Weights down 20-30%, reps as listed.", "Week 9: light. Weights down 20-30%, keep the calf raises at full volume."))
 
 RUN_SUMMARY = {5: "6 x 1:30 / 2:00 (9 min jog)", 6: "7 x 1:30 / 2:00 (10.5 min)", 7: "6 x 2:00 / 2:00 (12 min)", 8: "7 x 2:00 / 2:00 (14 min)", 9: "5 x 1:30 / 2:00 (7.5 min)"}
-HOURS = {5: "4.5 (+0.5 optional)", 6: "5.1 (+0.6)", 7: "5.6 (+0.7)", 8: "5.6 (+0.7)", 9: "4.1 (+0.5)"}
+HOURS = {5: "4.7 (+0.5 optional)", 6: "5.3 (+0.6)", 7: "5.8 (+0.7)", 8: "5.8 (+0.7)", 9: "4.3 (+0.5)"}
 
 def activity_week_pdf(activity, n, sessions):
     mon, sun = week_dates(n)
@@ -200,7 +200,7 @@ def overview_pdf():
         "Everything aerobic stays in Zone 1-2 while the body learns to run on ketones (self-rated 70% on 15 Oct). Fast legs come from cadence: 30 s spin-ups on the trainer, 180 steps per minute on marked jog reps.",
         "No FTP test until the adaptation feeling lifts. Provisional FTP 190 W; checkpoint ride in Week 9 decides.",
         "Jog capped at 6.5-7.0 mph. Your 8.6 mph intervals felt fine, and the cap is still there because speed is the Achilles load. It rises in Month 3 if November is pain-free.",
-        "Strength B moved to Friday: the Sunday run + strength brick was too hard on keto. Glute bridge replaced by machine glute thrust.",
+        "Strength B moved to Friday: the Sunday run + strength brick was too hard on keto. Rebuilt 29 Oct as a heavier single-leg day (glute thrust, split squat, single-leg deadlift, weighted step-down, calf raise, Copenhagen plank, Pallof press, suitcase carry): the same protective muscles, loaded like the big lifts you enjoy.",
         "Thursday is an optional elliptical session. First thing to drop in a busy week.",
     ])
     story.append(Paragraph("Weekly template", H2))
@@ -210,7 +210,7 @@ def overview_pdf():
         ["Tuesday", "Bike - trainer, ERG, Zone 2 with spin-ups", "12:00 PM", "40-60 min"],
         ["Wednesday", "Run - treadmill walk/run + prehab", "12:00 PM", "40-55 min"],
         ["Thursday", "Optional - elliptical Zone 2", "12:00 PM", "30-40 min"],
-        ["Friday", "Strength B - hips, knees, core", "12:00 PM", "35 min"],
+        ["Friday", "Strength B - single-leg strength (run durability)", "12:00 PM", "45 min"],
         ["Saturday", "Bike - weekend ride (outdoor if 5 C+ and dry)", "10:00 AM", "60-90 min"],
         ["Sunday", "Run - treadmill walk/run (no strength after)", "10:00 AM", "35-50 min"],
     ], [1.0*inch, 3.4*inch, 1.0*inch, 1.7*inch]))
