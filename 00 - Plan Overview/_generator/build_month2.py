@@ -4,7 +4,7 @@ Run from this folder: python build_month2.py"""
 import os, json, datetime as dt
 from build_plan import (ROOT, MONTHS, ACTIVITIES, COLORS, H2, BODY, inch, Paragraph, Spacer, KeepTogether,
                         table, build_pdf, header_block, bullets, week_folder, week_monday, week_dates, DAY_NAMES,
-                        bike, run, strength, strip_tags, COLOR_IDS)
+                        bike, run, strength, strip_tags, COLOR_IDS, drill_cards, DRILLS)
 
 TZ = "-05:00"  # America/Toronto is on EST from 1 Nov 2026
 MONTH = 2
@@ -86,9 +86,95 @@ def elliptical(n, dur):
         ("Main", "%d min at a conversational effort (heart rate under about 140). No intervals today." % dur),
     ], dur, "Only if the week feels good and the shoulder and legs are quiet. This is the first session to drop when life is busy.")
 
+
+def swim2(day, title, focus, rows, drills, total, dur, notes="", start="06:00"):
+    for d in drills:
+        assert d in DRILLS, d
+    return dict(activity="Swim", day=day, start=start, dur=dur, title=title, focus=focus, rows=rows, drills=drills, total=total, notes=notes)
+
+# Swimming returns in Month 2 (first swim back 30 Oct 2026: 850 m, shoulder 1/10, 1:50 per 100 m at a low heart rate,
+# 13 strokes per 25 m). Roberto's stated priority: learn the feeling of being fast in the water after ten years of plodding
+# endurance swimming. So: short fast 25s and 50s with full rest, stroke count as the honesty check, fins as a tool.
+# Endurance volume waits until the fast stroke is the default. Monday swim sits after Strength A; Thursday swim replaces
+# the optional elliptical (which stays as the no-pool fallback).
+SWIM_WU = ("Warm-up", "100 kick with fins (board, or on your back), then 100 easy FS. Fins are fine for every kick this month; bare-foot kick is not a speed set for anyone.")
+SWIM_CD = ("Cool-down", "100 easy, any stroke, finish with the shoulder loose, not worked.")
+SWIM_FAST = ("Fast means the quickest stroke you can hold at 12-13 strokes per 25 m (your count on 30 Oct). If the count climbs to 15-16 you are muscling it: "
+             "take the full rest and swim the next one smoother, not harder. Rest is part of the set, never shorten it.")
+SWIM_GATE = ("Shoulder gate: the fast set happens only if the morning after the last swim was 0-1/10 (0 = no pain). At 2-3, swim the same distance easy instead. "
+             "Sharp pain above 3 during a swim: kick and drills only, stop pulling. Fins yes, paddles no.")
+THU_NOTE = "No pool today? 30-40 min elliptical at a conversational effort is the fallback, not a replacement to prefer."
+
+def swim_pair(n, a_rows, a_drills, a_total, a_dur, a_title, b_rows, b_drills, b_total, b_dur, b_title, a_focus, b_focus, extra_a="", extra_b=""):
+    return [
+        swim2(0, a_title, a_focus, [SWIM_WU] + a_rows + [SWIM_CD], a_drills, a_total, a_dur,
+              SWIM_FAST + " " + SWIM_GATE + (" " + extra_a if extra_a else ""), start="06:50"),
+        swim2(3, b_title, b_focus, [SWIM_WU] + b_rows + [SWIM_CD], b_drills, b_total, b_dur,
+              SWIM_FAST + " " + SWIM_GATE + " " + THU_NOTE + (" " + extra_b if extra_b else "")),
+    ]
+
+SWIMS = {}
+SWIMS[5] = swim_pair(5,
+    [("Drills", "4 x 50 (25 Fingertip drag / 25 FS) r20"),
+     ("Main", "8 x 25 Build 50-style (easy to fast over the length) r30. Reps 1-4 with fins, 5-8 without. Count strokes on every one and write the counts on the sheet."),
+     ("Easy", "4 x 50 FS r20 at 1:50-2:00, long and relaxed")],
+    ["Fingertip drag", "Build 50", "Stroke count"], 900, 30, "Swim 1 - Fast feel, build 25s",
+    [("Drills", "4 x 50 (25 Zipper / 25 FS) r20"),
+     ("Main", "6 x 50 as 25 fast / 25 easy r30. Fins on reps 2, 4 and 6. The fast 25 is quick and smooth, the easy 25 is where you notice what changed.")],
+    ["Zipper", "Stroke count"], 800, 25, "Swim 2 - Fast feel, 25 fast / 25 easy",
+    "Speed exposure with fins first, then without. Shoulder still settling, so builds rather than flat-out.",
+    "Same idea from a push: fast length, easy length.",
+    extra_a="First swim of the block: if anything feels off, the Easy set is the session and the Main set waits a week.")
+
+SWIMS[6] = swim_pair(6,
+    [("Drills", "4 x 50 (25 Catch-up / 25 FS) r20"),
+     ("Main", "10 x 25 fast r30, alternating fins / no fins. On the no-fin ones hold 12-13 strokes; that is the whole game."),
+     ("Easy", "4 x 50 FS r20")],
+    ["Catch-up", "Stroke count"], 950, 30, "Swim 1 - Fast 25s, fins on and off",
+    [("Drills", "4 x 50 6-3-6 r20"),
+     ("Main", "8 x 50 as 25 fast / 25 easy r30. Fins on the even reps. Try to make the fast 25 without fins feel like the one with fins: hips high, quick turnover, not more kick.")],
+    ["6-3-6", "Stroke count"], 900, 30, "Swim 2 - 25 fast / 25 easy, longer",
+    "Ten fast lengths, half with fins. The fins show you the position; the bare-foot ones are where you keep it.",
+    "Two more 50s than last week, same rule.")
+
+SWIMS[7] = swim_pair(7,
+    [("Drills", "4 x 50 (25 Fist drill / 25 FS) r20"),
+     ("Main", "6 x 50 fast r40. Fins on 1, 3 and 5. Hold the stroke count across both lengths; the second 25 is where it usually climbs."),
+     ("Easy", "4 x 50 FS r20")],
+    ["Fist drill", "Stroke count"], 1000, 32, "Swim 1 - Fast 50s",
+    [("Drills", "4 x 50 (25 Fingertip drag / 25 FS) r20"),
+     ("Main", "3 rounds of (4 x 25 fast r20, then 50 easy). Rounds 1-2 without fins, round 3 with fins so the last fast lengths of the day are the quickest.")],
+    ["Fingertip drag", "Stroke count"], 950, 30, "Swim 2 - Fast 25s in rounds",
+    "First fast 50s. Twice the distance per rep, so the stroke count tells you more.",
+    "Short rest inside the round, a long easy 50 between rounds.")
+
+SWIMS[8] = swim_pair(8,
+    [("Drills", "4 x 50 (25 Catch-up / 25 FS) r20"),
+     ("Main", "8 x 50 fast r40, no fins. Note the time of each 50 off the watch and the stroke count. Aim: every 50 faster than 1:40 per 100 pace at 12-13 strokes per 25."),
+     ("Easy", "4 x 50 FS r20")],
+    ["Catch-up", "Stroke count"], 1100, 35, "Swim 1 - Fast 50s, no fins",
+    [("Drills", "4 x 50 (25 Zipper / 25 FS) r20"),
+     ("Main", "12 x 25 fast r30. Fins on 1-4, then 8 without. Same count, same feel, no fins."),
+     ("Easy", "4 x 50 FS r20")],
+    ["Zipper", "Stroke count"], 1000, 32, "Swim 2 - Twelve fast 25s",
+    "The biggest fast set of the block, all bare-foot. This is the week you find out if the fins taught you anything.",
+    "Volume of fast lengths up, fins down.")
+
+SWIMS[9] = swim_pair(9,
+    [("Drills", "4 x 50 (25 Fingertip drag / 25 FS) r20"),
+     ("Main", "4 x Build 50 r30 with fins. Easy, and enjoy the speed at the end of each.")],
+    ["Fingertip drag", "Build 50"], 700, 22, "Swim 1 - Recovery week, builds only",
+    [("Drills", "4 x 50 (25 Catch-up / 25 FS) r20"),
+     ("Checkpoint", "200 m time trial from a push, no fins, even pace. Record the time and the stroke count per 25 on the sheet. Reference from 30 Oct: 1:50 per 100 average, best 50 at 1:34 pace, 13 strokes per 25. "
+                    "Only if the shoulder has been 0-1/10 for the last two weeks; otherwise swim 4 x 50 easy instead and test in Week 10."),
+     ("Easy", "4 x 50 FS r20")],
+    ["Catch-up", "Stroke count"], 900, 28, "Swim 2 - Checkpoint 200 m",
+    "Light week. No fast set, just the feeling.",
+    "The number for the Month 2 reflection. Pace per 100 and strokes per 25 together, not pace alone.")
+
 M2 = {}
 
-M2[5] = dict(theme="Keto adaptation 1: settle in", bike=[
+M2[5] = dict(swim=SWIMS[5], theme="Keto adaptation 1: settle in", bike=[
     trainer(5, "Trainer - Zone 2 with spin-ups", "Aerobic base, fast legs without metabolic cost", [
         ("Warm-up", "10 min building from %s to %s, cadence 85-90" % (Z["z1"], Z["z2"])),
         ("Main", "25 min at 115-130 W. Every 4 min: 30 s spin-up to 110+ rpm at the same watts (6 total). Sit tall, no bouncing."),
@@ -98,10 +184,10 @@ M2[5] = dict(theme="Keto adaptation 1: settle in", bike=[
         ("Outdoors", "60 min easy on the Tay loop or similar. Keep the effort to full-sentence conversation, avoid chasing the hills."),
         ("Trainer version", "10 min warm-up, 40 min at 115-135 W with 3 x 5 min at 95 rpm, 10 min cool-down."),
     ], 60)],
-    run=[walkrun(2, 6, 1.5, 2.0, "5 and 6", 45), elliptical(5, 30), walkrun(6, 6, 1.5, 2.0, "5 and 6", 40, start="08:00")],
+    run=[walkrun(2, 6, 1.5, 2.0, "5 and 6", 45), walkrun(6, 6, 1.5, 2.0, "5 and 6", 40, start="08:00")],
     strength=strength_pair(5, "Week 5: hold the Oct 8 loads. Push-ups only if the shoulder is at 0-1/10.", "Week 5: find the loads. Glute thrust 150 lb, split squat 2 x 25 lb, single-leg deadlift 35 lb, 3 reps in reserve everywhere."))
 
-M2[6] = dict(theme="Keto adaptation 2: one more rep", bike=[
+M2[6] = dict(swim=SWIMS[6], theme="Keto adaptation 2: one more rep", bike=[
     trainer(6, "Trainer - Zone 2, spin-ups and single-leg", "Pedalling skill while the engine adapts", [
         ("Warm-up", "10 min building to %s" % Z["z2"]),
         ("Main", "30 min at 115-135 W. Every 4 min: 30 s spin-up to 110+ rpm (8 total). Then 4 x (30 s left / 30 s right / 1 min both) single-leg in an easy gear."),
@@ -111,10 +197,10 @@ M2[6] = dict(theme="Keto adaptation 2: one more rep", bike=[
         ("Outdoors", "75 min easy. Add 4 x 1 min at 100 rpm on the flats to keep it interesting."),
         ("Trainer version", "10 min warm-up, 55 min at 115-135 W with 2 x 10 min at 95 rpm, 10 min cool-down."),
     ], 75, "Carry water with sodium even if you eat nothing.")],
-    run=[walkrun(2, 7, 1.5, 2.0, "6 and 7", 50), elliptical(6, 35), walkrun(6, 7, 1.5, 2.0, "6 and 7", 45, start="08:00")],
+    run=[walkrun(2, 7, 1.5, 2.0, "6 and 7", 50), walkrun(6, 7, 1.5, 2.0, "6 and 7", 45, start="08:00")],
     strength=strength_pair(6, "Week 6: add 1-2 reps per set, same weights.", "Week 6: +10-20 lb on the glute thrust, +5 lb per dumbbell where Week 5 was clean."))
 
-M2[7] = dict(theme="Adaptation easing: a little more time at the top of Zone 2", bike=[
+M2[7] = dict(swim=SWIMS[7], theme="Adaptation easing: a little more time at the top of Zone 2", bike=[
     trainer(7, "Trainer - upper Zone 2 blocks", "Sustained aerobic work at a brisk cadence", [
         ("Warm-up", "10 min building to %s, with 3 x 30 s spin-ups" % Z["z2"]),
         ("Main", "3 x 8 min at %s at 95 rpm / 4 min easy at %s between" % (Z["z2hi"], Z["z1"])),
@@ -124,10 +210,10 @@ M2[7] = dict(theme="Adaptation easing: a little more time at the top of Zone 2",
         ("Outdoors", "90 min easy with 2 x 10 min at a brisk-but-conversational effort (upper Zone 2), 10 min easy between."),
         ("Trainer version", "10 min warm-up, 70 min at 115-135 W with 2 x 10 min at %s, 10 min cool-down." % Z["z2hi"]),
     ], 90, "Electrolytes in the bottle. Note how the last 20 min feel compared with Week 5.")],
-    run=[walkrun(2, 6, 2.0, 2.0, "5 and 6", 50), elliptical(7, 40), walkrun(6, 6, 2.0, 2.0, "5 and 6", 45, start="08:00")],
+    run=[walkrun(2, 6, 2.0, 2.0, "5 and 6", 50), walkrun(6, 6, 2.0, 2.0, "5 and 6", 45, start="08:00")],
     strength=strength_pair(7, "Week 7: heaviest week of the block. Goblet squat 75 lb, RDL 60 lb if the last two weeks were clean.", "Week 7: heaviest week. Glute thrust 180-200 lb, split squat 2 x 35 lb, calf raise 200 lb."))
 
-M2[8] = dict(theme="Consolidate", bike=[
+M2[8] = dict(swim=SWIMS[8], theme="Consolidate", bike=[
     trainer(8, "Trainer - upper Zone 2 blocks, lower cadence", "Same work, more torque", [
         ("Warm-up", "10 min building to %s, with 3 x 30 s spin-ups" % Z["z2"]),
         ("Main", "4 x 6 min at %s at 85-90 rpm / 3 min easy between" % Z["z2hi"]),
@@ -137,10 +223,10 @@ M2[8] = dict(theme="Consolidate", bike=[
         ("Outdoors", "90 min steady, full-sentence effort throughout. The goal is a flat heart rate line."),
         ("Trainer version", "10 min warm-up, 70 min at 120-135 W at 90 rpm, 10 min cool-down."),
     ], 90, "Compare average heart rate with Week 7. Lower at the same watts means adaptation is landing.")],
-    run=[walkrun(2, 7, 2.0, 2.0, "6 and 7", 55), elliptical(8, 40), walkrun(6, 7, 2.0, 2.0, "6 and 7", 50, start="08:00")],
+    run=[walkrun(2, 7, 2.0, 2.0, "6 and 7", 55), walkrun(6, 7, 2.0, 2.0, "6 and 7", 50, start="08:00")],
     strength=strength_pair(8, "Week 8: hold Week 7 loads, add a rep where it is clean.", "Week 8: hold Week 7 loads. Copenhagen plank to 30 s, add a rep where it is clean."))
 
-M2[9] = dict(theme="Recovery week and checkpoint", bike=[
+M2[9] = dict(swim=SWIMS[9], theme="Recovery week and checkpoint", bike=[
     trainer(9, "Trainer - easy spin", "Recovery", [
         ("Warm-up", "10 min easy"),
         ("Main", "20 min at 105-120 W at 90-95 rpm, 4 x 30 s spin-ups"),
@@ -150,11 +236,11 @@ M2[9] = dict(theme="Recovery week and checkpoint", bike=[
         ("If the 70% feeling has lifted", "20-minute FTP test on the trainer: 20 min warm-up (3 x 1 min at 100 rpm, 5 min hard-but-steady, 5 min easy), 20 min at the highest even power you can hold, 10 min cool-down. FTP = 20-min average x 0.95 = ________ W. Replace the provisional 190 W everywhere."),
         ("If not yet", "60 min easy Zone 2, outdoors or trainer. Test in Week 10 or 11 instead. Nothing is lost by waiting."),
     ], 60, "Either way, weigh in this week and write the number in the Month 2 reflection.", start="08:00")],
-    run=[walkrun(2, 5, 1.5, 2.0, "4 and 5", 40), elliptical(9, 30), walkrun(6, 5, 1.5, 2.0, "4 and 5", 35, start="08:00")],
+    run=[walkrun(2, 5, 1.5, 2.0, "4 and 5", 40), walkrun(6, 5, 1.5, 2.0, "4 and 5", 35, start="08:00")],
     strength=strength_pair(9, "Week 9: light. Weights down 20-30%, reps as listed.", "Week 9: light. Weights down 20-30%, keep the calf raises at full volume."))
 
 RUN_SUMMARY = {5: "6 x 1:30 / 2:00 (9 min jog)", 6: "7 x 1:30 / 2:00 (10.5 min)", 7: "6 x 2:00 / 2:00 (12 min)", 8: "7 x 2:00 / 2:00 (14 min)", 9: "5 x 1:30 / 2:00 (7.5 min)"}
-HOURS = {5: "4.7 (+0.5 optional)", 6: "5.3 (+0.6)", 7: "5.8 (+0.7)", 8: "5.8 (+0.7)", 9: "4.3 (+0.5)"}
+HOURS = {5: "5.6", 6: "6.3", 7: "6.8", 8: "6.9", 9: "5.1"}
 
 def activity_week_pdf(activity, n, sessions):
     mon, sun = week_dates(n)
@@ -182,46 +268,70 @@ def activity_week_pdf(activity, n, sessions):
     build_pdf(path, story, "Week %02d %s" % (n, activity))
     return path
 
-def swim_note_pdf(n):
-    story = header_block("Swim", "Week %02d Swim - paused" % n, "No swim is scheduled this week.")
-    story.append(Paragraph("Why", H2))
-    story.append(Paragraph("Shoulder recovery. Swimming resumes after two weeks of pain-free pressing (push-ups, floor press) and daily life. "
-        "When that day comes, the first session is 20 minutes: 200 easy, 6 x 50 kick with board, 4 x 50 kick on side, 4 x 50 catch-up, 100 easy. No pulling sets, no paddles. "
-        "If you swim this week on your own, write it in the next reflection. The Swim Drill Glossary in 00 - Plan Overview is still the pool sheet.", BODY))
+def swim_week_pdf(n):
+    mon, sun = week_dates(n)
+    sub = "Week %d of 52 &nbsp;|&nbsp; %s to %s &nbsp;|&nbsp; Month %d: %s" % (n, mon.strftime("%a %d %b %Y"), sun.strftime("%a %d %b %Y"), MONTH, M2[n]["theme"])
+    story = header_block("Swim", "Week %02d Swim" % n, sub)
+    story.append(Paragraph("The idea this month: short fast lengths with full rest, stroke count as the honesty check, fins as a teaching tool. "
+        "Endurance volume comes back once the fast stroke is the default. 25 m pool. Every swim is 700-1,100 m and 22-35 minutes.", BODY))
+    story.append(Spacer(1, 4))
+    for s_ in M2[n]["swim"]:
+        d = mon + dt.timedelta(days=s_["day"])
+        block = [Paragraph("%s, %s &nbsp; %s &nbsp; (%d min)" % (DAY_NAMES[s_["day"]], d.strftime("%d %b"), s_["title"], s_["dur"]), H2),
+                 Paragraph("<b>Focus:</b> " + s_["focus"], BODY), Spacer(1, 3)]
+        rows = [["Section", "Details"]] + [[a, b] for a, b in s_["rows"]]
+        block.append(table(rows, [1.3*inch, 5.8*inch], color=COLORS["Swim"]))
+        block.append(Paragraph("<b>Total:</b> about %d m" % s_["total"], BODY))
+        block.append(Paragraph("<b>Notes:</b> " + s_["notes"], BODY))
+        block.append(Spacer(1, 6))
+        story.append(KeepTogether(block))
+    names = []
+    for s_ in M2[n]["swim"]:
+        for dname in s_["drills"]:
+            if dname not in names:
+                names.append(dname)
+    story += drill_cards(names)
+    story.append(Paragraph("Shoulder and stroke log (0 = no pain, 10 = worst pain)", H2))
+    story.append(table([["Session", "Shoulder during", "Next morning", "Strokes per 25, fast", "Best 25 or 50 time", "Notes"],
+                        ["Monday", "", "", "", "", ""], ["Thursday", "", "", "", "", ""]],
+                       [0.9*inch, 1.0*inch, 1.0*inch, 1.3*inch, 1.2*inch, 1.7*inch], color=COLORS["Swim"]))
     path = os.path.join(week_folder("Swim", n), "Week %02d Swim.pdf" % n)
     build_pdf(path, story, "Week %02d Swim" % n)
+    return path
 
 def overview_pdf():
     story = header_block("Plan", "Month 2 Overview - November 2026", "Weeks 5-9 &nbsp;|&nbsp; Phase: Keto-adaptation block &nbsp;|&nbsp; 2 November to 6 December 2026")
     story.append(Paragraph("What changed from Month 1, and why", H2))
     bullets(story, [
         "Built from the 13 Sep to 13 Oct reflection and your comments on it (Reflections folder).",
-        "No swim scheduled: shoulder recovery. Return criteria are in each Swim week sheet.",
+        "Swimming is back (first swim 30 Oct, shoulder 1/10): two short swims a week, Monday after Strength A and Thursday in place of the elliptical. Built around the feeling of being fast: 25s and 50s with full rest, stroke count as the check, fins as a tool. Volume comes later.",
         "Everything aerobic stays in Zone 1-2 while the body learns to run on ketones (self-rated 70% on 15 Oct). Fast legs come from cadence: 30 s spin-ups on the trainer, 180 steps per minute on marked jog reps.",
         "No FTP test until the adaptation feeling lifts. Provisional FTP 190 W; checkpoint ride in Week 9 decides.",
         "Jog capped at 6.5-7.0 mph. Your 8.6 mph intervals felt fine, and the cap is still there because speed is the Achilles load. It rises in Month 3 if November is pain-free.",
         "Strength B moved to Friday: the Sunday run + strength brick was too hard on keto. Rebuilt 29 Oct as a heavier single-leg day (glute thrust, split squat, single-leg deadlift, weighted step-down, calf raise, Copenhagen plank, Pallof press, suitcase carry): the same protective muscles, loaded like the big lifts you enjoy.",
-        "Thursday is an optional elliptical session. First thing to drop in a busy week.",
+        "The optional elliptical is gone from the calendar; it stays as the no-pool fallback in the Thursday swim notes.",
     ])
     story.append(Paragraph("Weekly template", H2))
     story.append(table([
         ["Day", "Session", "Time", "Duration"],
         ["Monday", "Strength A - full-body foundation", "12:00 PM", "45 min"],
+        ["Monday", "Swim 1 - fast feel (after Strength A, or move to Tuesday)", "12:50 PM", "22-35 min"],
         ["Tuesday", "Bike - trainer, ERG, Zone 2 with spin-ups", "12:00 PM", "40-60 min"],
         ["Wednesday", "Run - treadmill walk/run + prehab", "12:00 PM", "40-55 min"],
-        ["Thursday", "Optional - elliptical Zone 2", "12:00 PM", "30-40 min"],
+        ["Thursday", "Swim 2 - fast feel (elliptical only if no pool)", "12:00 PM", "25-32 min"],
         ["Friday", "Strength B - single-leg strength (run durability)", "12:00 PM", "45 min"],
         ["Saturday", "Bike - weekend ride (outdoor if 5 C+ and dry)", "10:00 AM", "60-90 min"],
         ["Sunday", "Run - treadmill walk/run (no strength after)", "10:00 AM", "35-50 min"],
     ], [1.0*inch, 3.4*inch, 1.0*inch, 1.7*inch]))
     story.append(Paragraph("Calendar slots are placeholders for a mid-day session; drag them to the real time on the day. Every event's single reminder fires at 8:00 AM, nothing earlier.", BODY))
     story.append(Paragraph("Week by week", H2))
-    rows = [["Week", "Dates", "Theme", "Trainer", "Weekend ride", "Walk/run (x2)", "Hours"]]
+    rows = [["Week", "Dates", "Theme", "Trainer", "Weekend ride", "Walk/run (x2)", "Swims (x2)", "Hours"]]
     for n in WEEKS:
         mon, sun = week_dates(n)
         w = M2[n]
-        rows.append([str(n), "%s - %s" % (mon.strftime("%d %b"), sun.strftime("%d %b")), w["theme"], "%d min" % w["bike"][0]["dur"], "%d min" % w["bike"][1]["dur"], RUN_SUMMARY[n], HOURS[n]])
-    story.append(table(rows, [0.45*inch, 0.95*inch, 1.7*inch, 0.7*inch, 0.9*inch, 1.6*inch, 0.8*inch]))
+        rows.append([str(n), "%s - %s" % (mon.strftime("%d %b"), sun.strftime("%d %b")), w["theme"], "%d min" % w["bike"][0]["dur"], "%d min" % w["bike"][1]["dur"], RUN_SUMMARY[n],
+                     "%d + %d m" % (w["swim"][0]["total"], w["swim"][1]["total"]), HOURS[n]])
+    story.append(table(rows, [0.45*inch, 0.95*inch, 1.45*inch, 0.65*inch, 0.85*inch, 1.3*inch, 0.85*inch, 0.6*inch]))
     story.append(Paragraph("Fuelling on keto and modified OMAD", H2))
     bullets(story, [
         "Sessions up to 60 min: fasted is fine. Water.",
@@ -232,19 +342,19 @@ def overview_pdf():
     story.append(table([
         ["Measure", "Mid-Oct", "End of Month 2"],
         ["Body weight (lb)", "just under 200", ""], ["Provisional / tested FTP (W)", "190 (provisional)", ""], ["Walk/run pain scores at or under 3 (0 = no pain)", "", "____ of 10 sessions"],
-        ["Shoulder: pain-free pressing for 2 weeks?", "improving", ""], ["Sessions completed", "", "____ of 30 (+5 optional)"], ["Average Garmin sleep score", "80-91", ""],
+        ["Shoulder: pain-free pressing for 2 weeks?", "improving", ""], ["200 m swim time trial (time, strokes per 25)", "30 Oct: 1:50/100 avg, 13 strokes", ""], ["Sessions completed", "", "____ of 40"], ["Average Garmin sleep score", "80-91", ""],
     ], [2.6*inch, 2.2*inch, 2.3*inch]))
     build_pdf(os.path.join(ROOT, MONTH_NAME, "Month 02 Overview.pdf"), story, "Month 02 Overview")
 
 # Calendar slots and reminders (agreed 15 Oct 2026): Roberto trains mid-day and wants the ONE notification at 8:00 AM,
 # never a 6 AM buzz. Weekdays start 12:00 with a 240-min popup; weekends start 10:00 with a 120-min popup. Both fire at 8:00.
-SLOT = {"06:00": ("12:00", 240), "08:00": ("10:00", 120), "08:35": ("10:35", 155)}
+SLOT = {"06:00": ("12:00", 240), "06:50": ("12:50", 290), "08:00": ("10:00", 120), "08:35": ("10:35", 155)}
 
 def events():
     out = []
     for n in WEEKS:
         mon, _ = week_dates(n)
-        for key in ["bike", "run", "strength"]:
+        for key in ["swim", "bike", "run", "strength"]:
             for s in M2[n][key]:
                 d = mon + dt.timedelta(days=s["day"])
                 slot, reminder = SLOT.get(s["start"], (s["start"], 240))
@@ -266,7 +376,7 @@ if __name__ == "__main__":
     overview_pdf()
     made = 1
     for n in WEEKS:
-        swim_note_pdf(n); made += 1
+        swim_week_pdf(n); made += 1
         for act, key in zip(["Bike", "Run", "Strength"], ["bike", "run", "strength"]):
             activity_week_pdf(act, n, M2[n][key]); made += 1
     ev = events()

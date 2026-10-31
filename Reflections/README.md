@@ -36,9 +36,10 @@ The plan folders are the map; this folder is the trip log.
 
 ## Standing context (updated as it changes)
 
-- **Swimming paused** from late September 2026 because of a nagging shoulder injury. Improving as of
-  mid-October (can roll onto it, lighter loading at the gym is fine). Not scheduled; return starts with
-  a 20-minute kick-and-drill swim after two weeks of pain-free pressing.
+- **Swimming is back** from 30 Oct 2026 (first swim 850 m, shoulder 1/10). Month 2 has two short swims a week
+  (Monday after Strength A, Thursday in place of the elliptical) built on the feeling of being fast: 25s and 50s
+  with full rest, stroke count (13 per 25 m on 30 Oct) as the honesty check, fins as a tool. Shoulder gate on every
+  fast set; the Week 9 checkpoint is a 200 m time trial.
 - **Ketogenic diet** started October 2026 as a long-term, non-negotiable health choice, on a modified
   one-meal-a-day pattern, so most mid-day sessions are fasted. Expect 4 to 6 weeks of adaptation
   (self-rated "about 70%" on 15 October). Lower power or pace in this window is expected, not lost
